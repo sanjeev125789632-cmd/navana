@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuToggle.addEventListener('click', () => {
       menuToggle.classList.toggle('open');
       navMenu.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(navMenu.classList.contains('open')));
     });
 
     // Highlight active link based on current page route
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', () => {
         menuToggle.classList.remove('open');
         navMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
       });
     });
   }

@@ -28,6 +28,22 @@
   --header-height: 80px;
 }
 
+/* Answer-ready FAQ blocks */
+.faq-section { background: var(--bg-cream); }
+.faq-list { max-width: 920px; margin: 2rem auto 0; border-top: 1px solid rgba(62, 47, 47, .18); }
+.faq-list details { border-bottom: 1px solid rgba(62, 47, 47, .18); padding: 0; }
+.faq-list summary { cursor: pointer; list-style: none; padding: 1.35rem 2.5rem 1.35rem 0; font-family: 'Montserrat', sans-serif; font-weight: 600; position: relative; }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after { content: '+'; position: absolute; right: .25rem; top: 1.1rem; font-size: 1.5rem; color: var(--color-tan); }
+.faq-list details[open] summary::after { content: '−'; }
+.faq-list details p { max-width: 800px; margin: 0 0 1.35rem; line-height: 1.75; }
+.related-service { margin-top: 2rem; }
+.related-service a, .faq-list a { color: var(--color-brown); text-decoration: underline; text-underline-offset: 3px; }
+.division-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.division-summary-card { border: 1px solid rgba(62, 47, 47, .18); padding: 1.5rem; background: rgba(255,255,255,.22); }
+.division-summary-card h3 { margin-bottom: .65rem; }
+@media (max-width: 700px) { .division-summary-grid { grid-template-columns: 1fr; } }
+
 /* ----------------------------------------------------
    2. Reset & Base Styles
 ---------------------------------------------------- */
