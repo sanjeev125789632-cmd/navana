@@ -16,6 +16,7 @@ Static website for [navana.co.in](https://navana.co.in), a NAVANA business websi
 - `privacy/index.html` — website enquiry privacy notice
 - `404.html` — not-found page
 - `style.css` and `script.js` — shared presentation and behaviour
+- `assets/` — web-optimised derivatives of the original logo and displayed reference images; the source files remain unchanged at the repository root
 - Root-level `haven.html`, `designs.html`, `kitchens.html`, `essentials.html` and `contact.html` preserve older file URLs and use the directory URL as canonical.
 
 ## Published contact information
