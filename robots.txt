@@ -1,5 +1,3 @@
 User-agent: *
 Allow: /
-
-# Sitemap Index
 Sitemap: https://navana.co.in/sitemap.xml

@@ -1,210 +1,154 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // ----------------------------------------------------
-  // 1. Header Scroll State
-  // ----------------------------------------------------
   const header = document.querySelector('header');
-  const handleScroll = () => {
-    if (window.scrollY > 50) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
+  const menuButton = document.querySelector('.menu-toggle');
+  const navigation = document.querySelector('.nav-menu');
+
+  const closeMenu = () => {
+    if (!menuButton || !navigation) return;
+    menuButton.classList.remove('open');
+    navigation.classList.remove('open');
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-label', 'Open navigation');
+    document.body.classList.remove('menu-open');
+  };
+
+  const updateHeader = () => header?.classList.toggle('scrolled', window.scrollY > 24);
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  updateHeader();
+
+  menuButton?.addEventListener('click', () => {
+    const isOpen = navigation?.classList.toggle('open') ?? false;
+    menuButton.classList.toggle('open', isOpen);
+    menuButton.setAttribute('aria-expanded', String(isOpen));
+    menuButton.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+    document.body.classList.toggle('menu-open', isOpen);
+  });
+
+  navigation?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && navigation?.classList.contains('open')) {
+      closeMenu();
+      menuButton?.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (!navigation?.classList.contains('open')) return;
+    if (!navigation.contains(event.target) && !menuButton?.contains(event.target)) closeMenu();
+  });
+  window.matchMedia('(min-width: 961px)').addEventListener('change', (event) => {
+    if (event.matches) closeMenu();
+  });
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealItems = document.querySelectorAll('.reveal');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealItems.forEach((item) => item.classList.add('is-visible'));
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -24px' });
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  const divisionSelect = document.getElementById('division');
+  const divisionFields = document.getElementById('divisionFields');
+  const detailOne = document.getElementById('detailOne');
+  const detailTwo = document.getElementById('detailTwo');
+  const detailOneLabel = document.getElementById('detailOneLabel');
+  const detailTwoLabel = document.getElementById('detailTwoLabel');
+
+  const fieldOptions = {
+    haven: {
+      firstLabel: 'Property type',
+      firstOptions: ['Residential property', 'Commercial property', 'Not sure yet'],
+      secondLabel: 'Preferred location',
+      secondOptions: ['Nerul', 'Elsewhere in Navi Mumbai', 'Open to suggestions']
+    },
+    designs: {
+      firstLabel: 'Space type',
+      firstOptions: ['Home', 'Commercial space', 'Other'],
+      secondLabel: 'Current stage',
+      secondOptions: ['Planning stage', 'Site available for review', 'Renovation enquiry']
+    },
+    kitchens: {
+      firstLabel: 'Kitchen stage',
+      firstOptions: ['New kitchen', 'Kitchen replacement', 'Planning only'],
+      secondLabel: 'Measurements available?',
+      secondOptions: ['Yes', 'No', 'Partially']
+    },
+    essentials: {
+      firstLabel: 'Product category',
+      firstOptions: ['Bathroom fittings', 'Sanitaryware', 'Door hardware', 'Architectural fittings'],
+      secondLabel: 'Specification available?',
+      secondOptions: ['Yes', 'No', 'Need help preparing it']
     }
   };
-  window.addEventListener('scroll', handleScroll);
-  handleScroll(); // Run once on startup
 
-  // ----------------------------------------------------
-  // 2. Mobile Navigation Toggle
-  // ----------------------------------------------------
-  const menuToggle = document.querySelector('.menu-toggle');
-  const navMenu = document.querySelector('.nav-menu');
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  if (menuToggle && navMenu) {
-    menuToggle.addEventListener('click', () => {
-      menuToggle.classList.toggle('open');
-      navMenu.classList.toggle('open');
-      menuToggle.setAttribute('aria-expanded', String(navMenu.classList.contains('open')));
-    });
-
-    // Highlight active link based on current page route
-    const currentPath = window.location.pathname.toLowerCase();
-    navLinks.forEach(link => {
-      const href = link.getAttribute('href');
-      if (!href) return;
-      
-      const cleanHref = href.toLowerCase().replace(/^\.\.\//, '').replace(/^\//, '').replace(/\/index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, '');
-      const cleanPath = currentPath.replace(/^\//, '').replace(/\/index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, '');
-
-      if ((cleanPath === '' && (cleanHref === '' || cleanHref === '#' || cleanHref === '#hero')) || (cleanPath !== '' && cleanHref !== '' && cleanPath.endsWith(cleanHref))) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-
-    // Close menu when a link is clicked
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        menuToggle.classList.remove('open');
-        navMenu.classList.remove('open');
-        menuToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  // ----------------------------------------------------
-  // 3. Scroll Reveal (Intersection Observer)
-  // ----------------------------------------------------
-  const revealElements = document.querySelectorAll('.reveal');
-  
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        // Unobserve once revealed to keep performance optimal
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  });
-
-  revealElements.forEach(element => {
-    revealObserver.observe(element);
-  });
-
-  // ----------------------------------------------------
-  // 4. Floating Connection Hub Menu
-  // ----------------------------------------------------
-  const floatingHub = document.querySelector('.floating-hub');
-  const hubTrigger = document.querySelector('.hub-trigger');
-
-  if (hubTrigger && floatingHub) {
-    hubTrigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      hubTrigger.classList.toggle('active');
-      floatingHub.classList.toggle('open');
-    });
-
-    // Close floating hub if clicked anywhere else
-    document.addEventListener('click', () => {
-      hubTrigger.classList.remove('active');
-      floatingHub.classList.remove('open');
-    });
-  }
-
-  // ----------------------------------------------------
-  // 5. Toast Notification System
-  // ----------------------------------------------------
-  const toastContainer = document.querySelector('.toast-container');
-
-  const showToast = (title, message) => {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `
-      <div class="toast-content">
-        <h5>${title}</h5>
-        <p>${message}</p>
-      </div>
-      <button class="toast-close">&times;</button>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    // Force reflow and slide-in
-    setTimeout(() => {
-      toast.classList.add('show');
-    }, 10);
-
-    // Event listener for manual close
-    const closeBtn = toast.querySelector('.toast-close');
-    closeBtn.addEventListener('click', () => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 500);
-    });
-
-    // Auto dismiss after 5 seconds
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 500);
-      }
-    }, 5000);
+  const fillSelect = (select, options) => {
+    select.replaceChildren(new Option('Select an option', ''));
+    options.forEach((option) => select.add(new Option(option, option)));
   };
 
-  // ----------------------------------------------------
-  // 6. Contact Form Submission Handling (Web3Forms API)
-  // ----------------------------------------------------
-  const contactForm = document.getElementById('contactForm');
-  
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+  divisionSelect?.addEventListener('change', () => {
+    const config = fieldOptions[divisionSelect.value];
+    if (!config || !divisionFields || !detailOne || !detailTwo) {
+      if (divisionFields) divisionFields.hidden = true;
+      if (detailOne) detailOne.disabled = true;
+      if (detailTwo) detailTwo.disabled = true;
+      return;
+    }
+    detailOneLabel.textContent = config.firstLabel;
+    detailTwoLabel.textContent = config.secondLabel;
+    detailOne.name = config.firstLabel.toLowerCase().replace(/[^a-z]+/g, '_').replace(/^_|_$/g, '');
+    detailTwo.name = config.secondLabel.toLowerCase().replace(/[^a-z]+/g, '_').replace(/^_|_$/g, '');
+    fillSelect(detailOne, config.firstOptions);
+    fillSelect(detailTwo, config.secondOptions);
+    detailOne.disabled = false;
+    detailTwo.disabled = false;
+    divisionFields.hidden = false;
+  });
 
-      const nameInput = document.getElementById('formName');
-      const emailInput = document.getElementById('formEmail');
-      const phoneInput = document.getElementById('formPhone');
-      const messageInput = document.getElementById('formMessage');
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const submitBtnText = submitBtn.querySelector('span');
-
-      // Basic Validation Check
-      if (!nameInput.value.trim() || !emailInput.value.trim() || !phoneInput.value.trim() || !messageInput.value.trim()) {
-        showToast('Submission Error', 'Please fill in all required fields.');
-        return;
-      }
-
-      // Visual Loading Feedback
-      const originalText = submitBtnText.textContent;
-      submitBtnText.textContent = 'Sending Message...';
-      submitBtn.style.opacity = '0.75';
-      submitBtn.style.pointerEvents = 'none';
-
-      const formData = new FormData(contactForm);
-      if (!formData.get('access_key')) {
-        formData.append('access_key', 'b5730e3b-e938-4af4-a496-31366194bff5');
-      }
-
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        body: formData
-      })
-      .then(async (response) => {
-        const json = await response.json();
-        if (response.status === 200) {
-          showToast(
-            'Message Sent Successfully!', 
-            'Thank you for contacting NAVANA. Your message has been sent directly to our mailbox.'
-          );
-          contactForm.reset();
-        } else {
-          showToast('Submission Error', json.message || 'Something went wrong. Please try again.');
-        }
-      })
-      .catch(() => {
-        showToast('Submission Error', 'Unable to connect. Please check your network connection.');
-      })
-      .finally(() => {
-        submitBtnText.textContent = originalText;
-        submitBtn.style.opacity = '1';
-        submitBtn.style.pointerEvents = 'auto';
-
-        const inputs = contactForm.querySelectorAll('.form-input');
-        inputs.forEach(input => input.blur());
-      });
-    });
+  if (divisionSelect) {
+    const requestedDivision = new URLSearchParams(window.location.search).get('division');
+    if (requestedDivision && fieldOptions[requestedDivision]) {
+      divisionSelect.value = requestedDivision;
+      divisionSelect.dispatchEvent(new Event('change'));
+    }
   }
 
-  // ----------------------------------------------------
-  // 7. Interactive Map Details
-  // ----------------------------------------------------
-  const mapPin = document.querySelector('.map-pin');
-  if (mapPin) {
-    mapPin.addEventListener('click', () => {
-      showToast('NAVANA Office Location', 'Shop 53, 19 East, Nerul, Navi Mumbai. Visited daily from 10:00 AM to 7:00 PM.');
-    });
-  }
+  const form = document.getElementById('contactForm');
+  const formStatus = document.getElementById('formStatus');
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalLabel = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending…';
+    formStatus.textContent = '';
+    formStatus.dataset.state = '';
+    try {
+      const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+      const result = await response.json();
+      if (!response.ok || result.success === false) throw new Error(result.message || 'Submission failed.');
+      form.reset();
+      if (divisionFields) divisionFields.hidden = true;
+      if (detailOne) detailOne.disabled = true;
+      if (detailTwo) detailTwo.disabled = true;
+      formStatus.textContent = 'Your enquiry has been sent. The selected NAVANA desk can follow up using the details you provided.';
+      formStatus.dataset.state = 'success';
+    } catch (error) {
+      formStatus.textContent = 'The form could not be sent. Please use the division phone, WhatsApp or email link on this page.';
+      formStatus.dataset.state = 'error';
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalLabel;
+      formStatus.focus();
+    }
+  });
 });
