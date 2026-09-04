@@ -1,6 +1,6 @@
 # NAVANA website
 
-Static website for [navana.co.in](https://navana.co.in), a NAVANA business website organised around four divisions:
+Static website for [www.navana.co.in](https://www.navana.co.in), a NAVANA business website organised around four divisions:
 
 - NAVANA Haven — real estate enquiries
 - NAVANA Designs — interior design
@@ -17,11 +17,12 @@ Static website for [navana.co.in](https://navana.co.in), a NAVANA business websi
 - `404.html` — not-found page
 - `style.css` and `script.js` — shared presentation and behaviour
 - `assets/` — web-optimised derivatives of the original logo and displayed reference images; the source files remain unchanged at the repository root
+- `vercel.json` — permanent bare-domain to WWW redirect for the Vercel deployment
 - Root-level `haven.html`, `designs.html`, `kitchens.html`, `essentials.html` and `contact.html` preserve older file URLs and use the directory URL as canonical.
 
 ## Published contact information
 
-- Studio: Shop 53, 19 East, Sec:19A, Nerul, Navi Mumbai, Maharashtra 400706, India
+- Studio: Shop 53, 19 East, Sec 19A, Nerul, Navi Mumbai, Maharashtra 400706, India
 - Email: navana.19east@gmail.com
 - Haven: +91 70780 88098
 - Designs: +91 97688 17629
@@ -34,6 +35,7 @@ Static website for [navana.co.in](https://navana.co.in), a NAVANA business websi
 - Do not describe reference images as completed NAVANA work unless ownership and project association have been confirmed.
 - Keep root-level legacy HTML copies in sync with their corresponding directory pages.
 - Keep visible contact information and JSON-LD data consistent.
+- Use `https://www.navana.co.in/` for canonical, Open Graph, schema and sitemap URLs.
 - Preserve one H1, self-referencing canonicals, keyboard focus styles and reduced-motion behaviour on every indexable page.
 
 ## Owner confirmation required
@@ -44,6 +46,9 @@ Static website for [navana.co.in](https://navana.co.in), a NAVANA business websi
 - Legal business name and privacy retention period
 - Meaning of “55+ AUM”, including currency, unit, period and evidence
 - Image ownership and association with any NAVANA project or supplied product
+- A verified NAVANA studio or completed-project photograph for the social sharing card
+- Exact studio coordinates and verified opening hours
+- GA4 measurement ID and confirmation that the existing Search Console token belongs to the active WWW property
 - Verified completed work, clients, testimonials and product brands
 
 Serve the repository root through a local HTTP server when testing so root-relative URLs behave as they do in production.

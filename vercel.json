@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "navana.co.in"
+        }
+      ],
+      "destination": "https://www.navana.co.in/:path*",
+      "permanent": true
+    }
+  ]
+}
